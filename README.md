@@ -49,7 +49,8 @@ Stablebaseline3 SAC ,PPO에서는 패널티 reward를 -10으로 설정했고 dis
 
 ## 1. stablebaseline3 SAC & PPO 
 
-구축한 환경에서 stablebaseline3 적용했을때 작동하지 않아서 작동할수있도록 칼라 환경을 수정하였습니다 - stablebaseline3_sac.py 파일에서 확인할수있습니다
+구축한 환경에서 stablebaseline3 적용했을때 작동하지 않아서 작동할수있도록 칼라 환경을 수정하였습니다 
+-> stablebaseline3_sac.py 파일에서 확인할수있습니다
 
 
 ### SAC 
@@ -57,11 +58,15 @@ Stablebaseline3 SAC ,PPO에서는 패널티 reward를 -10으로 설정했고 dis
 SAC를 적용했을때 결과가 잘 나올줄 알았지만 생각보다 잘 나오지 않았습니다. 일정 거리를 직진을 해야 하는데 일정 스텝 지나면 직진은 조금하고 좌우로 이동하면서 track을 벗어나는 현상이 있었습니다. 
 
 **Tensorborad 결과**
+![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/e9662633-daf4-4c2a-9995-3c2f1d8c1f3a)
+![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/16e164ab-680a-49ac-ac2d-95d41d16279a)
 
 1e6(백만) 스텝까지 돌린 결과도 있었는데 결과가 좋지 않아서 다시 돌리기 위해 삭제를 했었는데 시간 부족으로 20만 스텝까지 돌리지 못했습니다 - 다음부터는 첨부 자료를 위해 삭제 하지 않겠습니다. 
 결론부터 말하면 20만 스텝의 결과에서 큰 차이가 없었습니다. 
 
 #### SAC Eval 
+![model_300000_steps_eval](https://github.com/meang123/carla_RL_meang_version/assets/70367965/faff9c9c-6b36-428b-b50a-1b3c3106ac9c)
+![model_400000_steps_eval (1)](https://github.com/meang123/carla_RL_meang_version/assets/70367965/bddd27a7-431f-4978-a73c-c130ac6bb6bb)
 
 
 ### PPO 
@@ -69,11 +74,16 @@ SAC가 잘 작동하지 않아서 환경문제인지 아닌지를 확인하기 �
 
 
 **Tensorborad 결과**
+![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/6212c3da-9cca-48b2-873b-e3b1a5977d3d)
+![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/1a23f07a-6982-40eb-beaa-509987a2d1c9)
 
 40만 스텝에서 성능이 좋았고 오히려 100만 스텝에서는 더 좋지 않았습니다 아래는 비교 영상입니다
 
 #### 40만 스텝 Eval
+![model_400000_steps_eval](https://github.com/meang123/carla_RL_meang_version/assets/70367965/1803a74c-c968-488a-aa4a-b45dd253c4d8)
+
 #### 100만 스텝 Eval 
+![model_1000000_steps_eval](https://github.com/meang123/carla_RL_meang_version/assets/70367965/832fc6e3-4d97-4d7c-aca9-a7ba8437e4a5)
 
 
 ## 2. Raylib 환경 구축 
@@ -97,14 +107,15 @@ Ray lib 환경과 맞추는 작업을 실패하였고 SAC성능을 올리기 위
 Gaussian RBF 적용했습니다 
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/4194382d-52bd-4548-a28a-6c0ffddfe2ef/7c65ce6b-4d82-48eb-bd8c-877df4a7eeb6/Untitled.png)
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/4194382d-52bd-4548-a28a-6c0ffddfe2ef/831f3db5-4d15-4f57-88dd-fc458a3c9120/Untitled.png)
-a_i 는 action space 안에서 centroid location이다. (state와 theta로부터 learn)
+
+a_i 는 action space 안에서 centroid location (state와 theta로부터 learn)
 
 - Determine the weighting of each value
 - Distance to action을 통해 가중치 계산에 영향준다
 
-|a-A_i| action A와 centroid a_i의 유사도를 본다
+|a-A_i| action A와 centroid a_i의 유사도를 봅니다
 
-v_i : state주어졌을때 values(Expected reward or value function at each entroid location)이다
+v_i : state주어졌을때 values(Expected reward or value function at each entroid location)
 
 - Expected value or reward at each centroid location
 - Q value estimate를 구하기 위해 가중치 부여하고 합산하는 양
@@ -113,8 +124,23 @@ v_i : state주어졌을때 values(Expected reward or value function at each entr
 
 각 state마다 centroid value에 어떤 값 넣어야 하는 값 학습
 
-- 전반적으로 Q function approximation이 목표이다
+-> 전반적으로 Q function approximation을 RBF를 통해하는게 목표입니다. 
+
+### Train 시작 영상 
+Stbablebaseline3 SAC를 train했을때는 앞서 언급한것과 같이 불안정한 모습을 보였는데 개선한 SAC를 작동했을때 처음 부터 안정적으로 나아가는 모습을 알수있었습니다. 
+
+### Eval 영상 
+
+
+-> 거의 1e6(백만)을 학습 시켰을때의 결과입니다 직선으로 직진하지 않고 코너를 돌려는 모습이 보이는것으로 보아 학습을 더 진행했을때 좋아질것으로 예상합니다 시간 부족으로 더 학습을 진행하지 못했는데 3백만까지 학습을 시켰을때는 코너를 돌수있을것으로 예상하고 있는데 향후에 진행하여 결과 비교 하는 영상을 업로드 하겠습니다 
+
+
 ## 4. DSAC-T (향후계획) 
+
+[DAC-T](https://arxiv.org/abs/2310.05858)
+
+앞서 언급했던것과 같이 Stablebaseline3 SAC train 했을때 일정 타임 스텝 지났을때 불안정한 현상(좌우로 이동하면서 Track 벗어남을 반복)을 발견할수있었습니다. 그래서 더 개선할수있는 방법을 탐색하다가 위에 논문을 발견했습니다. 분포를 기반으로 SAC를 적용하는 방식인 DSAC version 1을 개선한 DSAC version 2가 DSAC T입니다. 내용을 파악하고 코드를 적용하기에는 시간이 부족해서 향후 계획으로 남겼습니다. 
+
 
 
 
