@@ -105,8 +105,9 @@ Ray lib 환경과 맞추는 작업을 실패하였고 SAC성능을 올리기 위
 해당 논문에서는 continuous action space기반에 행동이 많이 있을때  value based model 과 actor critic model을 비교 하는 내용이고 RBF를 DQN에 적용한 value based model이 actor critic net (TD3, SAC)와 비교 했을때 더 좋은 결과를 보였다는 내용입니다 위에서는 RBF DQN value based vs actor critic method 방식의 비교 차이를 중점으로 작성된 논문인데 SAC에 적용하기 위해 actor policy net은 그대로 두고 critic net을 Q net -> RBF net으로 구성하여 적용하였습니다.
 
 Gaussian RBF 적용했습니다 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/4194382d-52bd-4548-a28a-6c0ffddfe2ef/7c65ce6b-4d82-48eb-bd8c-877df4a7eeb6/Untitled.png)
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/4194382d-52bd-4548-a28a-6c0ffddfe2ef/831f3db5-4d15-4f57-88dd-fc458a3c9120/Untitled.png)
+
+![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/a01be58d-f312-4c44-964c-d01104a664c3)
+
 
 a_i 는 action space 안에서 centroid location (state와 theta로부터 learn)
 
@@ -126,13 +127,33 @@ v_i : state주어졌을때 values(Expected reward or value function at each entr
 
 -> 전반적으로 Q function approximation을 RBF를 통해하는게 목표입니다. 
 
+### Tensorboard 결과 
+![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/04472369-bf40-4591-903d-a1692d544a35)
+
+
 ### Train 시작 영상 
 Stbablebaseline3 SAC를 train했을때는 앞서 언급한것과 같이 불안정한 모습을 보였는데 개선한 SAC를 작동했을때 처음 부터 안정적으로 나아가는 모습을 알수있었습니다. 
+
+
+
+https://github.com/meang123/carla_RL_meang_version/assets/70367965/29a618ea-8e69-4026-be2c-d4221e9d2bd8
+
+
 
 ### Eval 영상 
 
 
--> 거의 1e6(백만)을 학습 시켰을때의 결과입니다 직선으로 직진하지 않고 코너를 돌려는 모습이 보이는것으로 보아 학습을 더 진행했을때 좋아질것으로 예상합니다 시간 부족으로 더 학습을 진행하지 못했는데 3백만까지 학습을 시켰을때는 코너를 돌수있을것으로 예상하고 있는데 향후에 진행하여 결과 비교 하는 영상을 업로드 하겠습니다 
+https://github.com/meang123/carla_RL_meang_version/assets/70367965/4d04712d-c571-4713-9d6a-61f36ca6723d
+
+
+
+-> 거의 1e6(백만)을 학습 시켰을때의 결과입니다 
+
++ stablebaseline3 PPO,SAC처럼 좌우로 움직이면서 움직이지는 않음
++ 직선으로 직진하지 않고 코너를 돌려는 모습이 보임
+
+학습을 더 진행했을때 좋아질것으로 예상합니다 시간 부족으로 더 학습을 진행하지 못했는데 3백만까지 학습을 시켰을때는 코너를 돌수있을것으로 예상하고 있는데 향후에 진행하여 결과 비교 하는 영상을 업로드 하겠습니다 
+
 
 
 ## 4. DSAC-T (향후계획) 
