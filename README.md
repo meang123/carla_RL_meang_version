@@ -1,7 +1,19 @@
 # RL CARLA 정리 결과 
 
 
+
+<br>
+</br>
+
+
+
 **발표때 발표하지 않는 내용입니다 - 팀원분들이 했던 내용과 다르게 진행하였기 때문에 최종 발표할때는 내용을 넣지 않기로 하였습니다**
+
+
+
+<br>
+</br>
+
 
 
 
@@ -77,7 +89,8 @@ SAC가 잘 작동하지 않아서 환경문제인지 아닌지를 확인하기 �
 ![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/6212c3da-9cca-48b2-873b-e3b1a5977d3d)
 ![image](https://github.com/meang123/carla_RL_meang_version/assets/70367965/1a23f07a-6982-40eb-beaa-509987a2d1c9)
 
-40만 스텝에서 성능이 좋았고 오히려 100만 스텝에서는 더 좋지 않았습니다 아래는 비교 영상입니다
+40만 스텝에서 성능이 좋았고 오히려 100만 스텝에서는 더 좋지 않았습니다 아래는 비교 영상입니다 
+40만 스텝 영상 끝까지 보면 코너까지 돕니다
 
 #### 40만 스텝 Eval
 ![model_400000_steps_eval](https://github.com/meang123/carla_RL_meang_version/assets/70367965/1803a74c-c968-488a-aa4a-b45dd253c4d8)
