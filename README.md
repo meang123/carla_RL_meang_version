@@ -90,8 +90,12 @@ carla town10hd 맵에서 화창한 날씨, 비오는 날씨, 밤 환경 총 3가
 (controller.py)에 pid 제어 내용이 구현 되어있다 
 
 
-safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 하는것이 아니라 cost의 제약도 같이 고려 하는 알고리듬입니다 다음은 보상과 비용함수에 대한 내용이다
+safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 하는것이 아니라 cost의 제약도 같이 고려 하는 알고리듬입니다 다음은 보상과 비용함수에 대한 내용이다  
+
+
 ![reward_cost.png](img_video%2Freward_cost.png)
+
+
 
 다중 경로에 대한 학습 속도를 개선 하기 위해 병렬 학습을 고려하게 되었다 이를 위해 ray lib에서 제공하는 기능을 합쳤다 하지만 GPU를 여러대 사용할수있는 환경이 아니었기 때문에 아래와 같은 구조로 병렬 학습 진행하였다 
 
@@ -109,7 +113,10 @@ safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 
 ![fixed 1](img_video/fixed_1_plot.png)  
 
 
+
+
 ![fixed_1.gif](img_video%2Ffixed_1.gif)
+
 
 
 
@@ -128,8 +135,11 @@ safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 
 ![fixed_3_plot.png](img_video%2Ffixed_3_plot.png)  
 
 
-
 ![fixed_3.gif](img_video%2Ffixed_3.gif)
+
+
+
+
 
 ### 다중 경로 화창한 날씨  
 다중 경로를 위한 병렬 학습 코드는 시간 부족으로 학습을 끝까지 진행하지 못해서 결과를 낼수가 없었다 
