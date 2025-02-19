@@ -82,6 +82,8 @@ carla town10hd 맵에서 화창한 날씨, 비오는 날씨, 밤 환경 총 3가
 
 아키텍쳐는 다음과 같다   
 
+
+
 ![sys_archi](img_video/sys_architecture.png)
 
 
@@ -91,11 +93,22 @@ carla town10hd 맵에서 화창한 날씨, 비오는 날씨, 밤 환경 총 3가
 
 
 safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 하는것이 아니라 cost의 제약도 같이 고려 하는 알고리듬입니다 다음은 보상과 비용함수에 대한 내용이다
+
+
+
 ![reward_cost.png](img_video%2Freward_cost.png)
+
+
+
 
 다중 경로에 대한 학습 속도를 개선 하기 위해 병렬 학습을 고려하게 되었다 이를 위해 ray lib에서 제공하는 기능을 합쳤다 하지만 GPU를 여러대 사용할수있는 환경이 아니었기 때문에 아래와 같은 구조로 병렬 학습 진행하였다 
 
+
+
 ![parllell](img_video/parllell.png)
+
+
+
 
 그리고 메모리 문제 때문에 out of memorry 문제가 계속 발생 하였다 그래서 해상도를 기존 1080에서 480으로 줄이고 차량 수 사람 수도 극단적으로 줄여서 칼라 환경에서의 메모리를 경량화 하였다 그리고 초기에 데이터 모으기 위해 학습하는 파라미터, 버퍼 사이즈 등 메모리 경량화를 위해 하이퍼 파라미터 수정을 많이 했다 
 또한 칼라 시뮬레이터 퀄리티도 low버전으로 시뮬레이션 실행 하였다 
@@ -104,6 +117,7 @@ safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 
 ## 실험 결과
 
 ### 정해진 단일 경로 화창한 날씨
+
 
 
 ![fixed 1](img_video/fixed_1_plot.png)  
@@ -118,26 +132,43 @@ safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 
 ### 정해진 단일 경로 비오는 날씨   
 
 
+
 ![fixed_2_plot.png](img_video%2Ffixed_2_plot.png)  
+
+
+
 
 
 ![fixed_2.gif](img_video%2Ffixed_2.gif)
 
 
+
+
 ### 정해진 단일 경로 밤 날씨   
+
 
 
 ![fixed_3_plot.png](img_video%2Ffixed_3_plot.png)  
 
 
 
+
+
 ![fixed_3.gif](img_video%2Ffixed_3.gif)
+
+
+
 
 ### 다중 경로 화창한 날씨  
 다중 경로를 위한 병렬 학습 코드는 시간 부족으로 학습을 끝까지 진행하지 못해서 결과를 낼수가 없었다 
 다음은 학습을 진행한데까지의 내용이다 
 
+
+
+
 ![multi_1_plot.png](img_video%2Fmulti_1_plot.png)
+
+
 
 
 ## 추후 개선 사항 
