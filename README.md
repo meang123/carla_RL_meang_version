@@ -109,7 +109,9 @@ safe RL 적용이 cost의 제약 형태로 적용이 된다 보상만 최대화 
 ![fixed 1](img_video/fixed_1_plot.png)  
 
 
-![fixed_1.gif](img_video%2Ffixed_1.gif)
+
+![fixed_1.gif](img_video%2Ffixed_1.gif)  
+
 
 
 

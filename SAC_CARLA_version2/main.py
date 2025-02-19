@@ -30,8 +30,8 @@ def main():
     parser.add_argument('--tau', default=5e-3)
     parser.add_argument('--no_render', default=True)
 
-    parser.add_argument("--alpha_min", default=0.3, type=float)  # PER buffer alpha
-    parser.add_argument("--alpha_max", default=0.9, type=float)  # PER buffer alpha
+    parser.add_argument("--alpha_min", default=0.0, type=float)  # PER buffer alpha
+    parser.add_argument("--alpha_max", default=1.0, type=float)  # PER buffer alpha
 
     parser.add_argument("--policy_freq", default=2, type=int)  # Frequency of delayed policy updates
     parser.add_argument("--save_model", action="store_true")  # Save model and optimizer parameters
@@ -113,12 +113,12 @@ def main():
     buffer = PER_Buffer(args, device=device)
 
     BETA = args.beta_init
-    ALPHA = 0.6
+    ALPHA = args.alpha_min
 
     beta_scheduler = LinearSchedule(args.beta_gain_steps,args.beta_init,1.0) # beta end is 1.0 : scheduler must go to 1.0
-    alpha_scheduler = adaptiveSchedule(args.alpha_max,args.alpha_min)
-    actor_lr_scheduler = LinearSchedule(args.lr_decay_steps, args.lr_init, args.lr_end)
-    critic_lr_scheduler = LinearSchedule(args.lr_decay_steps, args.lr_init, args.lr_end)
+    alpha_scheduler = time_base_schedule(args.alpha_max,args.alpha_min,args.start_timesteps)
+    #actor_lr_scheduler = LinearSchedule(args.lr_decay_steps, args.lr_init, args.lr_end)
+    #critic_lr_scheduler = LinearSchedule(args.lr_decay_steps, args.lr_init, args.lr_end)
 
     # load the model
     if args.Loadmodel:
@@ -175,23 +175,27 @@ def main():
 
 
                     BETA = beta_scheduler.value(total_steps)
-                    td_mean = np.mean(buffer.buffer[:len(buffer)]["priority"])
-                    td_std = np.std(buffer.buffer[:len(buffer)]["priority"])
-                    ALPHA = alpha_scheduler.value(td_mean, td_std)
+
+                    ALPHA = alpha_scheduler.value(total_steps)
 
                     #print(f"\n scheduler debug {BETA} ,{td_mean} ,{td_std}, {ALPHA}\n\n")
 
                     # actor lr scheduler
-                    for p in policy.actor_optimizer.param_groups:
+                    # for p in policy.actor_optimizer.param_groups:
+                    #
+                    #     p['lr'] = actor_lr_scheduler.value(total_steps)
+                    #
+                    # # critic lr scheduler
+                    # for p in policy.critic_optimizer.param_groups:
+                    #     p['lr'] = critic_lr_scheduler.value(total_steps)
+                    #
+                    # for p in policy.critic_optimizer2.param_groups:
+                    #     p['lr'] = critic_lr_scheduler.value(total_steps)
 
-                        p['lr'] = actor_lr_scheduler.value(total_steps)
-
-                    # critic lr scheduler
-                    for p in policy.critic_optimizer.param_groups:
-                        p['lr'] = critic_lr_scheduler.value(total_steps)
-
-                    for p in policy.critic_optimizer2.param_groups:
-                        p['lr'] = critic_lr_scheduler.value(total_steps)
+                    if total_steps % 1000 == 0:
+                        print('scheduler step')
+                        for sched in policy.scheds:
+                            sched.step()
 
                 state = next_state
                 episode_reward += reward
@@ -199,17 +203,17 @@ def main():
                 total_steps += 1
                 max_ep_len += 1
 
-                if args.write:
-                    args.summary_writer.add_scalar('episode_reward', episode_reward, global_step=total_steps)
-                    args.summary_writer.add_scalar('PER_alpha', ALPHA, global_step=total_steps)
 
-                    args.summary_writer.add_scalar('beta', BETA, global_step=total_steps)
 
                 # Evaluate episode
                 if (total_steps + 1) % args.eval_freq == 0:
                     print("\nEvaluate score\n")
                     avg_reward,avg_cost = eval_policy(policy, env)
                     if args.write:
+                        args.summary_writer.add_scalar('episode_reward', episode_reward, global_step=total_steps + 1)
+                        args.summary_writer.add_scalar('PER_alpha', ALPHA, global_step=total_steps + 1)
+
+                        args.summary_writer.add_scalar('beta', BETA, global_step=total_steps + 1)
                         args.summary_writer.add_scalar('eval reward', avg_reward, global_step=total_steps + 1)
                         args.summary_writer.add_scalar('eval_cost', avg_cost, global_step=total_steps + 1)
 

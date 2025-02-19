@@ -64,17 +64,24 @@ alpha max 0.9
 alpha min 0.3
 
 """
-class adaptiveSchedule(object):
-    def __init__(self,alpha_max,alpha_min):
-        self.C = 10
+class time_base_schedule(object):
+    def __init__(self,alpha_max,alpha_min,total_timestep):
+        self.C = 0.05
+        self.total_timestep = total_timestep
         self.alpha_max = alpha_max
         self.alpha_min = alpha_min
 
-    def value(self,td_mean,td_std):
+    def value(self,cur_timestep):
 
-        differ = td_mean-td_std
-        alpha = self.alpha_min+(self.alpha_max-self.alpha_min)*(1/(1+np.exp(-differ/self.C)))
+        #differ = td_mean-td_std
+        progress = cur_timestep / self.total_timestep
+        # sigmoid 함수 입력: 진행도가 0.5일 때 중간값이 나오도록 변환
+        # 진행도가 낮으면 음수, 높으면 양수가 되어 sigmoid가 0에서 1로 변환됨
+        logistic_input = (progress - 0.5) / self.C
+        alpha = self.alpha_min+(self.alpha_max-self.alpha_min)*(1/(1+np.exp(-logistic_input)))
         return alpha
+
+
 
 
 

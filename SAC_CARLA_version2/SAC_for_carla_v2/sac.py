@@ -9,7 +9,7 @@ import torch.optim as optim
 
 from torch.distributions import Normal
 
-
+from torch.optim.lr_scheduler import MultiStepLR
 
 
 
@@ -177,7 +177,16 @@ class SAC(object):
 
         self.critic2 = Critic().to(self.device)
         self.critic_target2 = copy.deepcopy(self.critic2).eval()
-        #self.critic_optimizer2 = optim.AdamW(self.critic2.parameters(), lr=self.critic_lr)
+        self.critic_optimizer2 = optim.AdamW(self.critic2.parameters(), lr=self.critic_lr)
+
+        self.sched_actor = MultiStepLR(self.actor_optimizer, milestones=[400], gamma=0.5)
+        self.sched_critic = MultiStepLR(self.critic_optimizer, milestones=[400], gamma=0.5)
+        self.sched_critic2 = MultiStepLR(self.critic_optimizer2, milestones=[400], gamma=0.5)
+
+        self.sched_alpha = MultiStepLR(self.autotune_alpha_optimizer, milestones=[400], gamma=0.5)
+
+        self.scheds = [self.sched_actor, self.sched_critic, self.sched_critic2, self.sched_alpha]
+
 
 
     def select_action(self,state,random_sample=False):
@@ -262,7 +271,8 @@ class SAC(object):
         _sampling_weights = (torch.Tensor(sampling_weights).view((-1, 1))).to(self.device)
 
         # MSE loss with importance sampling
-        critic_loss = 0.5 * (TD_error1.pow(2) * _sampling_weights).mean() + 0.5 * (TD_error2.pow(2) * _sampling_weights).mean()
+        critic_loss = 0.5 * (TD_error1.pow(2) * _sampling_weights).mean()
+        critic_loss2 = 0.5 * (TD_error2.pow(2) * _sampling_weights).mean()
 
         # Optimize the critic
         self.critic_optimizer.zero_grad()
@@ -270,8 +280,13 @@ class SAC(object):
         torch.nn.utils.clip_grad_norm_(self.critic.parameters(), self.grad_clip_norm)
         self.critic_optimizer.step()
 
+        self.critic_optimizer2.zero_grad()
+        critic_loss2.backward()
+        torch.nn.utils.clip_grad_norm_(self.critic2.parameters(), self.grad_clip_norm)
+        self.critic_optimizer2.step()
 
-        if self.total_it % self.policy_freq == 0:
+        self.total_it += 1
+        if (self.total_it+1) % self.policy_freq == 0:
             for _ in range(self.policy_freq):
                 action_pi,log_pi,_ = self.actor.get_action(states)
                 q1 = self.critic(states,action_pi)
@@ -300,7 +315,7 @@ class SAC(object):
             self.soft_update(self.critic, self.critic_target, self.tau)
             self.soft_update(self.critic2, self.critic_target2, self.tau)
 
-            self.total_it += 1
+
 
 
 
